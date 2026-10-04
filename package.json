@@ -11,7 +11,9 @@
     "expo-glass-effect": "~57.0.4",
     "expo-image": "~57.0.5",
     "expo-linking": "~57.0.11",
+    "expo-navigation-bar": "~57.0.3",
     "expo-router": "~57.0.24",
+    "expo-screen-orientation": "~57.0.2",
     "expo-splash-screen": "~57.0.9",
     "expo-status-bar": "~57.0.1",
     "expo-symbols": "~57.0.3",
@@ -29,6 +31,8 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
+    "eslint": "^9.0.0",
+    "eslint-config-expo": "~57.0.2",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -37,7 +41,11 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "typecheck": "tsc --noEmit",
+    "check:gameplay": "node --experimental-strip-types focus-garden-handoff/verification/check-gameplay.mjs",
+    "check:timers": "node --experimental-strip-types scripts/check-native-timers.mjs",
+    "check:customization": "node --experimental-strip-types scripts/check-customization.mjs"
   },
   "private": true
 }

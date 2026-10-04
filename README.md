@@ -2,6 +2,8 @@
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
+The Focus Garden game is implemented in `src/app/index.tsx`. See [FOCUS_GARDEN.md](./FOCUS_GARDEN.md) for the Expo Go launch command, save behavior, editing guide, changed files, and phone verification steps.
+
 ## Get started
 
 1. Install dependencies

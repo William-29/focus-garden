@@ -1,14 +1,15 @@
 {
   "expo": {
-    "name": "focus-garden",
+    "name": "Focus Garden",
     "slug": "focus-garden",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "landscape",
     "icon": "./assets/images/icon.png",
     "scheme": "focusgarden",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "requireFullScreen": true
     },
     "android": {
       "adaptiveIcon": {
@@ -25,10 +26,12 @@
     },
     "plugins": [
       "expo-router",
+      ["expo-navigation-bar", { "hidden": true }],
+      ["expo-screen-orientation", { "initialOrientation": "LANDSCAPE" }],
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
+          "backgroundColor": "#352b3a",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }
