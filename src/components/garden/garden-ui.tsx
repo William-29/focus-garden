@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View, type StyleProp, type TextProps, type ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, Text, View, type StyleProp, type TextProps, type ViewStyle, type ViewProps } from 'react-native';
 
 import type { Plant } from '@/game/garden';
 
@@ -14,9 +14,9 @@ export function GardenText({ style, ...props }: TextProps) {
   return <Text {...props} style={[styles.text, style, { fontSize, lineHeight: Math.max(fontSize + 2, resolved?.lineHeight ?? 0) }]} />;
 }
 
-export function WoodPanel({ children, style }: { children: React.ReactNode; style?: StyleProp<ViewStyle> }) {
+export function WoodPanel({ children, style, ...props }: ViewProps) {
   return (
-    <View style={[styles.panel, style, { backgroundColor: 'transparent' }]}>
+    <View {...props} style={[styles.panel, style, { backgroundColor: 'transparent' }]}>
       <View pointerEvents="none" style={[styles.frameHorizontal, { backgroundColor: StyleSheet.flatten(style)?.backgroundColor ?? palette.wood }]} />
       <View pointerEvents="none" style={[styles.frameVertical, { backgroundColor: StyleSheet.flatten(style)?.backgroundColor ?? palette.wood }]} />
       <View pointerEvents="none" style={styles.inset} />

@@ -1,0 +1,19 @@
+# Seasonal scenery
+
+Created with the built-in imagegen tool, using `focus-garden-handoff/assets/garden-background.png` as the edit target. Spring uses that original cherry-blossom background. The matching winter, autumn and summer images are bundled locally for Expo Go. Falling weather and the winter growing greenhouse are rendered separately in code.
+
+Bundled assets: [winter.png](winter.png), [autumn.png](autumn.png), [summer.png](summer.png).
+
+## Prompts
+
+### winter
+
+Use case: lighting-weather. Asset type: full-screen background for an existing pixel-art farming game. Image 1 is the EDIT TARGET. Preserve the identical wide 16:9 layout and camera, exact positions and silhouettes of the shed top-left, evergreen top-right, broadleaf tree bottom-left, well middle-right, fence and border bushes. Keep the center almost empty for gameplay overlays. Preserve crisp small pixel-art blocks, dark plum outlines, cozy detailed pixel shading. No people, animals, text, interface, planting beds or greenhouse; those are rendered separately by the game. No particles in the air; game animates them. Fill all edges with scenery, no letterboxing. Transform ONLY the season to WINTER. Snowy pale blue-white ground with subtle pixel snow texture and icy lavender shadows. Layered snow caps on every bush, tree canopy, fence post, shed roof and well roof. Evergreen dark teal peeks beneath snow; bottom-left tree is a snow-dusted winter tree, not pink blossom. Cozy wooden shed remains recognizable with thick snow on roof and a few small icicles. Low winter daylight, cool blue/lavender and creamy whites. Snow covers flowers and lawn.
+
+### autumn
+
+Use case: lighting-weather. Asset type: full-screen background for an existing pixel-art farming game. Image 1 is the EDIT TARGET. Preserve the identical wide 16:9 layout and camera, exact positions and silhouettes of the shed top-left, evergreen top-right, broadleaf tree bottom-left, well middle-right, fence and border bushes. Keep the center almost empty for gameplay overlays. Preserve crisp small pixel-art blocks, dark plum outlines, cozy detailed pixel shading. No people, animals, text, interface, planting beds or greenhouse; those are rendered separately by the game. No particles in the air; game animates them. Fill all edges with scenery, no letterboxing. Transform ONLY the season to AUTUMN. Warm honey ochre lawn with olive tufts; border bushes in golden yellow, burnt orange and copper, a few muted greens. Bottom-left tree rich orange and golden leaves instead of pink flowers. Evergreen remains muted olive evergreen. A light scattering of fallen orange maple leaves mostly around edges, not filling center. Warm afternoon amber sunlight, shed roof dusty terracotta-pink, fence warm ivory. Same objects and layout.
+
+### summer
+
+Use case: lighting-weather. Asset type: full-screen background for an existing pixel-art farming game. Image 1 is the EDIT TARGET. Preserve the identical wide 16:9 layout and camera, exact positions and silhouettes of the shed top-left, evergreen top-right, broadleaf tree bottom-left, well middle-right, fence and border bushes. Keep the center almost empty for gameplay overlays. Preserve crisp small pixel-art blocks, dark plum outlines, cozy detailed pixel shading. No people, animals, text, interface, planting beds or greenhouse; those are rendered separately by the game. No particles in the air; game animates them. Fill all edges with scenery, no letterboxing. Transform ONLY the season to SUMMER. Sunny bright warm lime-green lawn, lush deeper green border bushes loaded with small colorful white, yellow, lavender and coral blooming flowers. Bottom-left tree now leafy rich green with a few soft pink blossoms; evergreen lush. A few small blooming flower clumps along the edges of the clear lawn. Sunlit golden highlights on foliage and shed, bright summer daylight. Do not draw a sun symbol or sky. Exact original objects and layout.

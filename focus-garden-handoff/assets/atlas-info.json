@@ -23,35 +23,5 @@
     "columns": 5,
     "rows": 3,
     "order": "row-major; use Plant.sprite from shared/garden.ts"
-  },
-  "gardener.png": {
-    "width": 1024,
-    "height": 1536,
-    "columns": 4,
-    "rows": 6,
-    "poses": [
-      "walk-right",
-      "walk-left",
-      "study-with-table",
-      "water"
-    ],
-    "outfitRows": [
-      "meadow",
-      "rain",
-      "blossom",
-      "denim",
-      "beekeeper",
-      "starlight"
-    ]
-  },
-  "study-table.png": {
-    "width": 256,
-    "height": 256
-  },
-  "plant-sprites.png": {
-    "width": 1448,
-    "height": 1086,
-    "columns": 4,
-    "note": "Only the starter sprout is used in this version. Crop x=0,y=0,width=362,height=302. The row spacing is not uniform."
   }
 }

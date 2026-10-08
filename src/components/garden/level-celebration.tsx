@@ -7,19 +7,19 @@ import { GardenText, palette, WoodPanel } from './garden-ui';
 import { PlantSprite } from './sprites';
 
 export function LevelCelebration() {
-  const { state } = useGardenState();
+  const { state, harvest } = useGardenState();
   const [dismissedKey, setDismissedKey] = useState(0);
   const [progress] = useState(() => new Animated.Value(0));
-  const event = state.levelEvent?.key !== dismissedKey ? state.levelEvent : null;
+  const event = !harvest && state.levelEvent?.key !== dismissedKey ? state.levelEvent : null;
   useEffect(() => {
-    if (!state.levelEvent) return;
+    if (!state.levelEvent || harvest) return;
     const key = state.levelEvent.key;
     progress.setValue(0);
     const animation = Animated.timing(progress, { toValue: 1, duration: 800, useNativeDriver: true });
     animation.start();
     const timeout = setTimeout(() => setDismissedKey(key), 4500);
     return () => { clearTimeout(timeout); animation.stop(); };
-  }, [state.levelEvent, progress]);
+  }, [state.levelEvent, progress, harvest]);
   if (!event) return null;
   return <View pointerEvents="box-none" style={styles.overlay}>
     <View pointerEvents="none" style={styles.confetti}>

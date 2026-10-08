@@ -5,6 +5,6 @@ const expoConfig = require("eslint-config-expo/flat");
 module.exports = defineConfig([
   expoConfig,
   {
-    ignores: ["dist/**", ".expo/**", "focus-garden-handoff/reference-web/**"],
+    ignores: ["dist/**", ".expo/**"],
   }
 ]);

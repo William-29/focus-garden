@@ -1,58 +1,31 @@
-# Welcome to your Expo app 👋
+# Focus Garden
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A landscape pixel-art focus game built with React Native, Expo SDK 57 and TypeScript. Plant a seed to start a focus session, grow it while studying, and harvest for coins and XP or keep it for display. The garden includes seasons, a wardrobe, roaming pets and a seed shed.
 
-The Focus Garden game is implemented in `src/app/index.tsx`. See [FOCUS_GARDEN.md](./FOCUS_GARDEN.md) for the Expo Go launch command, save behavior, editing guide, changed files, and phone verification steps.
+## Run locally
 
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```powershell
+npm install
+npx expo start --go
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Open the QR code using a compatible Expo Go app. See [FOCUS_GARDEN.md](FOCUS_GARDEN.md) for the phone setup, save behavior and game controls.
 
-### Other setup steps
+## Project structure
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+- `src/app/`: garden, seed shed and settings routes.
+- `src/components/garden/`: native game interface and scenery.
+- `src/game/`: game extensions, navigation, pixel art and personalization.
+- `focus-garden-handoff/`: shared focus rules, crop artwork and original gameplay checks.
+- `assets/`: app icons and bundled pixel font with its source and licenses.
+- `scripts/`: game checks, font generator and pet-art review tool.
 
-## Learn more
+## Verify changes
 
-To learn more about developing your project with Expo, look at the following resources:
+```powershell
+npm run lint
+npm run typecheck
+npm run check:gameplay
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+The other `check:*` scripts in `package.json` cover timers, customization, names, scene controls, navigation, the crop wheel and pets.

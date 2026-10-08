@@ -1,0 +1,86 @@
+import assert from 'node:assert/strict';
+import { panelIdleReducer, foldedPanel, PANEL_IDLE_MS } from '../src/game/panel-idle.ts';
+import { beginScene, sceneReducer, SCENE_MIN_MS } from '../src/game/scene-transition.ts';
+import { gardenUIReducer, initialGardenUI } from '../src/game/notices.ts';
+
+assert.equal(PANEL_IDLE_MS, 5000);
+let toolbar = panelIdleReducer(foldedPanel, { type: 'open', now: 1000 });
+let growing = panelIdleReducer(foldedPanel, { type: 'open', now: 2000 });
+const firstDeadline = toolbar.deadline;
+assert.equal(panelIdleReducer(toolbar, { type: 'expire', deadline: firstDeadline, now: 5999 }).collapsed, false);
+toolbar = panelIdleReducer(toolbar, { type: 'touchStart', now: 5000 });
+toolbar = panelIdleReducer(toolbar, { type: 'activity', now: 5500 });
+assert.equal(toolbar.held, true, 'Scrolling does not end a held gesture');
+toolbar = panelIdleReducer(toolbar, { type: 'expire', deadline: firstDeadline, now: 20000 });
+assert.equal(toolbar.collapsed, false, 'A panel never folds under a finger');
+toolbar = panelIdleReducer(toolbar, { type: 'touchEnd', now: 20000 });
+assert.equal(toolbar.deadline, 25000, 'Release gives a full five-second window');
+assert.strictEqual(panelIdleReducer(toolbar, { type: 'expire', deadline: firstDeadline, now: 24000 }), toolbar, 'Stale timeouts cannot fold a recently touched panel');
+growing = panelIdleReducer(growing, { type: 'expire', deadline: growing.deadline, now: 24000 });
+assert.equal(growing.collapsed, true, 'The other panel expires independently, including after a background gap');
+toolbar = panelIdleReducer(toolbar, { type: 'expire', deadline: toolbar.deadline, now: 25000 });
+assert.equal(toolbar.collapsed, true, 'Expiry is exact');
+assert.strictEqual(panelIdleReducer(toolbar, { type: 'touchEnd', now: 26000 }), toolbar, 'Delayed touches cannot reopen a manually/automatically folded panel');
+toolbar = panelIdleReducer(toolbar, { type: 'open', now: 27000 });
+toolbar = panelIdleReducer(toolbar, { type: 'activity', now: 30000 });
+assert.equal(toolbar.deadline, 35000, 'Keyboard, accessibility and scroll activity extend the deadline');
+toolbar = panelIdleReducer(toolbar, { type: 'close', now: 30001 });
+assert.equal(toolbar.deadline, null, 'Manual folding cancels expiry');
+
+let scene = beginScene('winter', 0);
+const winterId = scene.id;
+scene = sceneReducer(scene, { type: 'finish', id: winterId, now: 90000 });
+assert.equal(scene.phase, 'loading', 'Elapsed time alone never uncovers an unloaded map');
+scene = sceneReducer(scene, { type: 'displayed', id: winterId, now: 20 });
+assert.equal(scene.phase, 'displayed');
+scene = sceneReducer(scene, { type: 'finish', id: winterId, now: 90000 });
+assert.equal(scene.phase, 'displayed', 'Initial load waits for loading artwork too');
+scene = sceneReducer(scene, { type: 'artReady', now: 30 });
+scene = sceneReducer(scene, { type: 'finish', id: winterId, now: SCENE_MIN_MS - 1 });
+assert.equal(scene.phase, 'displayed', 'Cached scenes still give a short, readable transition');
+scene = sceneReducer(scene, { type: 'finish', id: winterId, now: SCENE_MIN_MS });
+assert.equal(scene.phase, 'ready');
+assert.equal(scene.lastReady, 'winter');
+scene = beginScene('summer', 1000, scene);
+const summerId = scene.id;
+scene = beginScene('winter', 1100, scene);
+for (const id of [winterId, summerId]) for (const type of ['displayed', 'failed', 'finish']) {
+  assert.strictEqual(sceneReducer(scene, { type, id, now: 5000 }), scene, 'Late callbacks from previous requests cannot reveal or fail a newer season');
+}
+scene = sceneReducer(scene, { type: 'failed', id: scene.id, now: 20000 });
+assert.equal(scene.phase, 'error');
+assert.strictEqual(sceneReducer(scene, { type: 'displayed', id: scene.id, now: 20001 }), scene, 'An error stays reviewable until retry');
+const failedId = scene.id;
+scene = sceneReducer(scene, { type: 'retry', now: 21000 });
+assert.equal(scene.phase, 'loading');
+assert(scene.id > failedId);
+assert.equal(scene.artReady, true);
+scene = sceneReducer(scene, { type: 'displayed', id: scene.id, now: 45000 });
+assert.equal(scene.readyAt, 45080, 'A slow background remains covered until after its actual display');
+scene = sceneReducer(scene, { type: 'finish', id: scene.id, now: 45080 });
+assert.equal(scene.phase, 'ready');
+
+let ui = initialGardenUI();
+const perform = (action, now = 0) => { ui = gardenUIReducer(ui, { type: 'perform', action, now }); };
+perform({ type: 'plant', now: 0 });
+const active = ui.state.session, coins = ui.state.coins;
+for (const season of ['winter', 'summer', 'spring', 'autumn']) {
+  perform({ type: 'setSeason', season }, 1000);
+  assert.equal(ui.scene.season, ui.state.season, 'The loading cover and scene change in the SAME reducer update');
+  assert.equal(ui.scene.phase, 'loading');
+  assert.strictEqual(ui.state.session, active, 'Loading cannot restart or pause the focus deadline');
+  assert.equal(ui.state.coins, coins);
+}
+const before = ui.scene;
+perform({ type: 'setSeason', season: 'autumn' }, 2000);
+assert.strictEqual(ui.scene, before, 'Reselecting the current season does not reload it');
+perform({ type: 'tick', now: active.deadline }, active.deadline);
+assert.equal(ui.state.session.status, 'ready', 'Crops can ripen while the scene is loading');
+perform({ type: 'harvest' });
+assert.equal(ui.state.coins, coins + 29);
+assert.equal(ui.state.xp, 60);
+assert.equal(ui.harvest.plantId, 'carrot');
+const harvested = ui;
+perform({ type: 'harvest' });
+assert.strictEqual(ui, harvested, 'Repeated crop/button harvests share the exactly-once guard');
+console.log('Scene UI checks passed: independent five-second panel expiry, held touches, stale deadlines, scene display gating, rapid switches, load failure/retry, and preserved crop rewards.');

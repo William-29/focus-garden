@@ -12,7 +12,7 @@
       ]
     }
   },
-  "exclude": ["node_modules", "focus-garden-handoff/reference-web"],
+  "exclude": ["node_modules"],
   "include": [
     "**/*.ts",
     "**/*.tsx",

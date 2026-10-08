@@ -1,0 +1,11 @@
+Focus Garden Pixel is a modified regular-weight version of Pixelify Sans.
+The digit 5 has a straight full-width top bar and a clear upper-left stem.
+All other regular-weight glyph outlines and digit spacing are preserved.
+The primary font family is renamed Focus Garden Pixel.
+
+Source: PixelifySans.ttf, copyright 2021 The Pixelify Sans Project Authors
+https://github.com/eifetx/Pixelify-Sans
+
+This derivative is distributed under the SIL Open Font License, Version 1.1.
+See PixelifySans-OFL.txt in this directory for the complete license.
+Build script: scripts/build-garden-font.py

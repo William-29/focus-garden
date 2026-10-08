@@ -3,12 +3,10 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "dependencies": {
-    "@expo/ui": "~57.0.21",
+    "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "~57.0.26",
     "expo-constants": "~57.0.20",
-    "expo-device": "~57.0.2",
     "expo-font": "~57.0.4",
-    "expo-glass-effect": "~57.0.4",
     "expo-image": "~57.0.5",
     "expo-linking": "~57.0.11",
     "expo-navigation-bar": "~57.0.3",
@@ -16,9 +14,7 @@
     "expo-screen-orientation": "~57.0.2",
     "expo-splash-screen": "~57.0.9",
     "expo-status-bar": "~57.0.1",
-    "expo-symbols": "~57.0.3",
     "expo-system-ui": "~57.0.4",
-    "expo-web-browser": "~57.0.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.3",
@@ -37,7 +33,6 @@
   },
   "scripts": {
     "start": "expo start",
-    "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
@@ -45,7 +40,17 @@
     "typecheck": "tsc --noEmit",
     "check:gameplay": "node --experimental-strip-types focus-garden-handoff/verification/check-gameplay.mjs",
     "check:timers": "node --experimental-strip-types scripts/check-native-timers.mjs",
-    "check:customization": "node --experimental-strip-types scripts/check-customization.mjs"
+    "check:customization": "node --experimental-strip-types scripts/check-customization.mjs",
+    "check:personalization": "node --experimental-strip-types scripts/check-personalization.mjs",
+    "check:feedback": "node --experimental-strip-types scripts/check-ui-feedback.mjs",
+    "check:seasons": "node --experimental-strip-types scripts/check-seasons.mjs",
+    "check:motion": "node --experimental-strip-types scripts/check-garden-motion.mjs",
+    "check:scene-ui": "node --experimental-strip-types scripts/check-scene-ui.mjs",
+    "check:character": "node --experimental-strip-types scripts/check-character.mjs",
+    "check:crop-wheel": "node --experimental-strip-types scripts/check-crop-wheel.mjs",
+    "check:pets": "node --experimental-strip-types scripts/check-pet-art.mjs",
+    "check:pet-naming": "node --experimental-strip-types scripts/check-pet-naming.mjs",
+    "check:pet-placement": "node --experimental-strip-types scripts/check-pet-placement.mjs"
   },
   "private": true
 }

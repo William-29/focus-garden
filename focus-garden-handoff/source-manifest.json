@@ -2,21 +2,12 @@
   "source": "Focus Garden private prototype version 3",
   "sourceCommit": "9bd4c465daeffa4b79ddb36111d2685e25cbfcd5",
   "files": {
-    "PORTING_PROMPT.md": "a47c3910c451eee0226528a8ac31dc268c981e1fb5d14be6cbc6625d27fccd7f",
-    "README.md": "5c3a67029f55f4c14c6e8db188363927932ede8843292068995ad9cdd1f90594",
-    "assets/atlas-info.json": "792b3db7ec0ff9cac4be850f3a975aaeb8695b92356dd5711f10e3aba5136ab7",
     "assets/flowers.png": "f4b054b5fdbadf47e48a6ca3dc4de198683142ce1741f9efb78331a6040fb6d7",
     "assets/fruits.png": "8c18e2803bb32f17834e3d8901ef13618de944768c2ae423396ec74d9c229b1f",
     "assets/garden-background.png": "ec976a73ce0760379129af3675fb228e71a528f7f799aa632a961e1da6b1366e",
-    "assets/garden-mono.ttf": "11f15c3a6bbd998a8695fdefb3475931c3789aa035d7546f2efe78e83b352f6b",
-    "assets/gardener.png": "d0badb66503c2d4503732be0aa74b3c2f9f28070255db157e3c8462960c5ca90",
-    "assets/plant-sprites.png": "505eab46bcb1795c9cd8f5892a2b38a8d6836517971f690ed6f7763181824e10",
-    "assets/study-table.png": "030900c6217864890cc138c2b7853d76280cf506e8f5814cd36306cba178090e",
     "assets/vegetables.png": "51bcd0823d20238984b819f420d76cd46f186d448f6caaf1727eed22b9c4b985",
-    "reference-web/globals.css": "bfd35b6c3a2a882dfff8fd483625ef0cb2a4ca23f52c2b9092e53ab883579542",
-    "reference-web/page.tsx": "d2bb897e50c4e03da772923206abaa624dd7f4f6bf7c88c2ab14cdb6461970c1",
-    "reference-web/preview.jpg": "dcd924f9a4423daef4ab51bba0b2accff2699f37139b1e2f53ec78539853daa8",
     "shared/garden.ts": "ce826762168fda2f0c9d5e90dec8d184c284ef7d7463511eba14d93e6222d3af",
     "verification/check-gameplay.mjs": "36a04b7c9f7ffaf43a339f2ae108cad3cdf21f22e6e824f8596170b954566e2b"
-  }
+  },
+  "note": "Original source hashes for retained game rules, artwork and verification. Updated local documentation and atlas metadata are not included."
 }

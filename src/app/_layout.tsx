@@ -10,11 +10,14 @@ import { Platform } from 'react-native';
 import { GardenProvider } from '@/game/garden-provider';
 import { preloadGardenArt } from '@/components/garden/sprites';
 
+// Keep the garden mounted underneath directly opened shop/settings modals.
+export const unstable_settings = { anchor: 'index' };
+
 void SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    GardenPixel: require('../../assets/fonts/PixelifySans.ttf'),
+    GardenPixel: require('../../assets/fonts/FocusGardenPixel.ttf'),
   });
 
   useEffect(() => {
@@ -36,11 +39,10 @@ export default function RootLayout() {
       <StatusBar hidden />
       {Platform.OS === 'android' && <NavigationBar hidden />}
       <Stack screenOptions={{ headerShown: false, orientation: 'landscape', statusBarHidden: true,
-        navigationBarHidden: true, autoHideHomeIndicator: true, contentStyle: { backgroundColor: '#80dfad' } }}>
+        navigationBarHidden: true, autoHideHomeIndicator: true, contentStyle: { backgroundColor: '#352b3a' } }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="shop" options={{ animation: 'none', presentation: 'transparentModal', contentStyle: { backgroundColor: 'transparent' } }} />
         <Stack.Screen name="settings" options={{ animation: 'none', presentation: 'transparentModal', contentStyle: { backgroundColor: 'transparent' } }} />
-        <Stack.Screen name="explore" options={{ headerShown: true, title: 'Explore' }} />
       </Stack>
     </GardenProvider>
   );

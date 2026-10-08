@@ -1,74 +1,37 @@
-import { memo, useEffect, useState } from 'react';
-import { Animated, AppState, Easing, Pressable, StyleSheet, View } from 'react-native';
-import { pets, type PlacedPet } from '@/game/garden';
-import { petRoamPath } from '@/game/garden-layout';
+import { memo, useMemo } from 'react';
+import { Animated, Pressable, StyleSheet, View } from 'react-native';
+import { pets, type PetKind, type PlacedPet } from '@/game/garden';
+import { createPetNavigation } from '@/game/pet-placement';
+import { petDimensions, petWorldScale } from '@/game/pixel-art';
+import { petDisplayName } from '@/game/pet-names';
 import { useGardenState } from '@/game/garden-provider';
+import { useGardenWalker } from '@/hooks/use-garden-walker';
 import { PixelPet } from './pixel-sprites';
 
-function RoamingPet({ placed, width, height, onPress }: { placed: PlacedPet; width: number; height: number; onPress: () => void }) {
+function RoamingPet({ placed, width, height, onPress, paused }: { placed: PlacedPet; width: number; height: number; onPress: (id: PetKind) => void; paused: boolean }) {
+  const { state } = useGardenState();
   const pet = pets.find((item) => item.id === placed.id)!;
-  const index = pets.indexOf(pet);
-  const scale = height >= 550 ? 3 : 2;
-  const spriteWidth = 24 * scale, spriteHeight = 22 * scale;
-  const [position] = useState(() => new Animated.ValueXY());
-  const [frame, setFrame] = useState(0);
-  const [walking, setWalking] = useState(false);
-  const [flip, setFlip] = useState(false);
-
-  useEffect(() => {
-    let stopped = false, paused = false, timer: ReturnType<typeof setTimeout> | undefined;
-    let active: Animated.CompositeAnimation | undefined;
-    const path = petRoamPath(width, height, index, spriteWidth, spriteHeight);
-    const start = { x: Math.round(placed.x * width - spriteWidth / 2), y: Math.round(placed.y * height - spriteHeight) };
-    position.setValue(start);
-    let current = start;
-    let cursor = path.reduce((nearest, point, candidate) =>
-      Math.hypot(point.x - start.x, point.y - start.y) < Math.hypot(path[nearest].x - start.x, path[nearest].y - start.y) ? candidate : nearest, 0);
-    const walk = () => {
-      if (stopped || paused) return;
-      const target = path[cursor];
-      setFlip(target.x < current.x); setWalking(true);
-      const distance = Math.hypot(target.x - current.x, target.y - current.y);
-      active = Animated.timing(position, { toValue: target, duration: Math.max(2200, distance * (pet.id === 'turtle' ? 130 : 55)),
-        easing: Easing.linear, useNativeDriver: true, isInteraction: false });
-      active.start(({ finished }) => {
-        if (!finished || stopped) return;
-        cursor = (cursor + (index % 2 ? -1 : 1) + path.length) % path.length;
-        current = target; setWalking(false);
-        timer = setTimeout(walk, 1100 + index * 130);
-      });
-    };
-    const subscription = AppState.addEventListener('change', (status) => {
-      paused = status !== 'active';
-      if (paused) { active?.stop(); clearTimeout(timer); setWalking(false); }
-      else walk();
-    });
-    if (AppState.currentState === 'active' || AppState.currentState === null) walk();
-    return () => { stopped = true; clearTimeout(timer); active?.stop(); subscription.remove(); };
-  }, [placed.x, placed.y, width, height, index, pet.id, position, spriteWidth, spriteHeight]);
-
-  useEffect(() => {
-    if (!walking) return;
-    const timer = setInterval(() => setFrame((value) => (value + 1) % 4), pet.id === 'turtle' ? 280 : 170);
-    return () => clearInterval(timer);
-  }, [walking, pet.id]);
-
-  return <Animated.View style={[styles.pet, { width: spriteWidth, height: spriteHeight,
+  const name = petDisplayName(pet, state.petNames);
+  const scale = petWorldScale(pet), dimensions = petDimensions(pet);
+  const spriteWidth = dimensions.width * scale, spriteHeight = dimensions.height * scale;
+  const map = useMemo(() => createPetNavigation(width, height, state.season, pet),
+    [width, height, state.season, pet]);
+  const { position, walking, flip, frame, direction } = useGardenWalker({ map,
+    spawn: { x: placed.x * width, y: placed.y * height }, speed: pet.species === 'turtle' ? 10 : pet.baby ? 26 : 22, cardinal: true, paused });
+  return <Animated.View style={[styles.pet, { left: -spriteWidth / 2, top: -spriteHeight, width: spriteWidth, height: spriteHeight,
     transform: [{ translateX: position.x }, { translateY: position.y }] }]}>
-    <Pressable accessibilityRole="button" accessibilityLabel={`${pet.name}, open pet cottage`} onPress={onPress}
+    <Pressable accessibilityRole="button" accessibilityLabel={name + ', stop and name this pet'} onPress={() => onPress(pet.id)}
       style={{ width: spriteWidth, height: Math.max(44, spriteHeight), alignItems: 'center' }}>
       <View pointerEvents="none" style={[styles.shadow, { left: scale * 4, right: scale * 3, bottom: scale * 2 }]} />
-      <PixelPet pet={pet} scale={scale} frame={walking ? frame : 0} flip={flip} />
+      <PixelPet pet={pet} scale={scale} frame={walking ? frame : 0} view={walking && (direction === 'east' || direction === 'west') ? 'side' : 'front'} flip={walking && (direction === 'east' || direction === 'west') && flip} />
     </Pressable>
   </Animated.View>;
 }
-
-export const GardenPets = memo(function GardenPets({ width, height, onPress }: { width: number; height: number; onPress: () => void }) {
+export const GardenPets = memo(function GardenPets({ width, height, onPress, pausedPet = null }: { width: number; height: number; onPress: (id: PetKind) => void; pausedPet?: PetKind | null }) {
   const { state } = useGardenState();
-  return <>{state.roamingPets.map((pet) => <RoamingPet key={pet.id} placed={pet} width={width} height={height} onPress={onPress} />)}</>;
+  return <>{state.roamingPets.map((pet) => <RoamingPet key={pet.id} placed={pet} width={width} height={height} onPress={onPress} paused={pausedPet === pet.id} />)}</>;
 });
-
 const styles = StyleSheet.create({
-  pet: { position: 'absolute', top: 0, left: 0, zIndex: 2 },
+  pet: { position: 'absolute', zIndex: 2 },
   shadow: { position: 'absolute', height: 4, backgroundColor: '#3b765033' },
 });
