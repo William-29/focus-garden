@@ -26,14 +26,32 @@
     },
     "plugins": [
       "expo-router",
-      ["expo-navigation-bar", { "hidden": true }],
-      ["expo-screen-orientation", { "initialOrientation": "LANDSCAPE" }],
+      [
+        "expo-navigation-bar",
+        {
+          "hidden": true
+        }
+      ],
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "LANDSCAPE"
+        }
+      ],
       [
         "expo-splash-screen",
         {
           "backgroundColor": "#352b3a",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
+        }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "enableBackgroundPlayback": false
         }
       ]
     ],

@@ -4,13 +4,15 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { getLevel, getPlant, growth, timeLeft } from '@/game/garden';
 import { useGarden } from '@/game/garden-provider';
 import { useIdlePanel } from '@/hooks/use-idle-panel';
-import { durationLabel, formatClock, GardenButton, GardenText, palette, WoodPanel } from './garden-ui';
+import { durationLabel, formatClock, GardenButton, GardenText, palette, WoodPanel, useGardenControlScale, useGardenControlStyles } from './garden-ui';
 import { PlantSprite } from './sprites';
 import { GrowthWheel } from './growth-wheel';
 
 export function GrowingPanel({ width, height, right = 12, bottom = 12, onKeep }: {
   width: number; height: number; right?: number; bottom?: number; onKeep: () => void;
 }) {
+  const scale = useGardenControlScale();
+  const styles = useGardenControlStyles(baseStyles);
   const { state, now, perform } = useGarden();
   const idle = useIdlePanel();
   const session = state.session, plant = getPlant(session?.plantId ?? state.selectedSeed);
@@ -38,19 +40,19 @@ export function GrowingPanel({ width, height, right = 12, bottom = 12, onKeep }:
 
   if (idle.collapsed) return <Pressable accessibilityRole="button" accessibilityState={{ expanded: false }}
     accessibilityLabel={`Expand growing panel, ${ready ? heading : compactHeading}${session && !ready ? `, ${formatClock(remaining)} remaining` : ''}`}
-    onPress={idle.open} style={[styles.folded, { right, bottom, maxWidth: width * 0.28 }]}>
+    onPress={idle.open} style={[styles.folded, { right, bottom, maxWidth: width }]}>
     <WoodPanel style={[styles.foldedPanel, ready && { backgroundColor: palette.gold }]}>
-      <PlantSprite plant={plant} size={28} />
+      <PlantSprite plant={plant} size={28 * scale} />
       <View style={styles.foldedCopy}><GardenText numberOfLines={1} style={styles.small}>{compactHeading}</GardenText>
         {ready && <GardenText style={styles.small}>Harvest ready</GardenText>}
       </View>
-      {session && <GrowthWheel progress={percent} remaining={remaining} ready={ready} size={48} />}
+      {session && <GrowthWheel progress={percent} remaining={remaining} ready={ready} size={48 * scale} />}
       <View style={styles.expandIcon}><View style={styles.minus} /><View style={styles.plusStem} /></View>
     </WoodPanel>
   </Pressable>;
 
   return <WoodPanel onTouchStart={idle.touchStart} onTouchEnd={idle.touchEnd} onTouchCancel={idle.touchEnd}
-    style={[styles.panel, { width: width * 0.28, maxHeight: height - 72, right, bottom }]}>
+    style={[styles.panel, { width: width, maxHeight: height - 72 * scale, right, bottom }]}>
     <View style={styles.titleRow}>
       <View style={styles.headingCopy}><GardenText style={styles.headingText}>{heading}</GardenText>
         <GardenText style={styles.badge}>{state.quick ? 'Quick play' : 'Focus session'}</GardenText></View>
@@ -59,10 +61,10 @@ export function GrowingPanel({ width, height, right = 12, bottom = 12, onKeep }:
     </View>
     <ScrollView style={styles.scroll} contentContainerStyle={styles.details} showsVerticalScrollIndicator={false} onScroll={idle.activity} scrollEventThrottle={150}>
       <View style={styles.plantRow}>
-        <PlantSprite plant={plant} size={36} />
+        <PlantSprite plant={plant} size={36 * scale} />
         <View style={styles.plantName}><GardenText style={styles.name}>{plant.name}</GardenText>
           <GardenText style={styles.small}>{plant.rarity}</GardenText></View>
-        <GrowthWheel progress={percent} remaining={remaining} ready={ready} size={56} />
+        <GrowthWheel progress={percent} remaining={remaining} ready={ready} size={56 * scale} />
       </View>
       <GardenText style={styles.small}>{durationLabel(plant)}</GardenText>
       {session && plant.minutes.length > 1 && <View style={styles.phases}>
@@ -80,7 +82,7 @@ export function GrowingPanel({ width, height, right = 12, bottom = 12, onKeep }:
   </WoodPanel>;
 }
 
-const styles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
   panel: { position: 'absolute', right: 12, bottom: 12, padding: 9, zIndex: 3 },
   folded: { position: 'absolute', zIndex: 3, minHeight: 48 },
   foldedPanel: { padding: 8, minHeight: 48, flexDirection: 'row', gap: 5, alignItems: 'center' },

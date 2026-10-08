@@ -2,34 +2,36 @@ import { memo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { getLevel, MAX_LEVEL } from '@/game/garden';
 import { localGardenDate, seasonNames, type Season } from '@/game/seasons';
-import { GardenText, palette, ProgressBar, WoodPanel } from './garden-ui';
+import { GardenText, palette, ProgressBar, WoodPanel, useGardenControlScale, useGardenControlStyles } from './garden-ui';
 import { PixelCoin, PixelSeason } from './pixel-garden-art';
 
 export const GardenHud = memo(function GardenHud({ minute, coins, xp, season, left, right, top, onProfile, onSeason }: {
   minute: number; coins: number; xp: number; season: Season; left: number; right: number; top: number;
   onProfile: () => void; onSeason: () => void;
 }) {
+  const scale = useGardenControlScale();
+  const controlStyles = useGardenControlStyles(styles);
   const local = localGardenDate(minute), level = getLevel(xp);
-  return <View pointerEvents="box-none" style={[styles.header, { left, right, top }]}>
-    <View style={styles.leftGroup}>
-      <WoodPanel style={styles.clockPanel}>
-        <View accessible accessibilityLabel={`Local time ${local.time}, ${local.date}`} style={styles.dateCopy}>
-          <GardenText style={styles.time}>{local.time}</GardenText>
-          <GardenText style={styles.date}>{local.date}</GardenText>
+  return <View pointerEvents="box-none" style={[controlStyles.header, { left, right, top }]}>
+    <View style={controlStyles.leftGroup}>
+      <WoodPanel style={controlStyles.clockPanel}>
+        <View accessible accessibilityLabel={`Local time ${local.time}, ${local.date}`} style={controlStyles.dateCopy}>
+          <GardenText style={controlStyles.time}>{local.time}</GardenText>
+          <GardenText style={controlStyles.date}>{local.date}</GardenText>
         </View>
-        <View accessible accessibilityLabel={`${coins} coins`} style={styles.balance}>
-          <PixelCoin size={22} /><GardenText style={styles.coins}>{coins}</GardenText>
+        <View accessible accessibilityLabel={`${coins} coins`} style={controlStyles.balance}>
+          <PixelCoin size={22 * scale} /><GardenText style={controlStyles.coins}>{coins}</GardenText>
         </View>
       </WoodPanel>
       <Pressable accessibilityRole="button" accessibilityLabel={`${seasonNames[season]}, choose garden season`} onPress={onSeason}>
-        <WoodPanel style={styles.season}><PixelSeason season={season} size={18} /><GardenText style={styles.date}>{seasonNames[season]}</GardenText></WoodPanel>
+        <WoodPanel style={controlStyles.season}><PixelSeason season={season} size={18 * scale} /><GardenText style={controlStyles.date}>{seasonNames[season]}</GardenText></WoodPanel>
       </Pressable>
     </View>
     <Pressable accessibilityRole="button" accessibilityLabel={`Open gardener profile, level ${level}, ${xp} XP`} onPress={onProfile}>
-      <WoodPanel style={styles.profile}>
-        <GardenText style={styles.level}>Lv {level}</GardenText>
-        <View style={styles.xpCopy}>
-          <GardenText style={styles.date}>{level === MAX_LEVEL ? 'MAX XP' : `${xp % 100} / 100 XP`}</GardenText>
+      <WoodPanel style={controlStyles.profile}>
+        <GardenText style={controlStyles.level}>Lv {level}</GardenText>
+        <View style={controlStyles.xpCopy}>
+          <GardenText style={controlStyles.date}>{level === MAX_LEVEL ? 'MAX XP' : `${xp % 100} / 100 XP`}</GardenText>
           <ProgressBar value={level === MAX_LEVEL ? 1 : xp % 100 / 100} label="XP to next garden level" />
         </View>
       </WoodPanel>

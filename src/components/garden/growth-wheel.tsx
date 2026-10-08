@@ -1,15 +1,16 @@
 import { memo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { formatClock, GardenText } from './garden-ui';
+import { formatClock, GardenText, useGardenControlScale } from './garden-ui';
 
 // Small connected segments keep the ring lightweight and pixel-art friendly.
 const segments = 48;
 export const GrowthWheel = memo(function GrowthWheel({ progress, remaining, ready = false, size = 54 }: {
   progress: number; remaining: number; ready?: boolean; size?: number;
 }) {
+  const scale = useGardenControlScale();
   const value = ready ? 1 : Math.max(0, Math.min(1, progress));
-  const stroke = 3, radius = (size - stroke) / 2;
-  const length = Math.PI * 2 * radius / segments + 0.7;
+  const stroke = 3 * scale, radius = (size - stroke) / 2;
+  const length = Math.PI * 2 * radius / segments + 0.7 * scale;
   const clock = formatClock(ready ? 0 : remaining);
   return <View accessible accessibilityRole="timer" accessibilityLabel={ready ? "Plant ready to harvest" : "Growing, " + clock + " remaining"}
     pointerEvents="none" style={[styles.wheel, { width: size, height: size, borderRadius: size / 2 }]}>
@@ -21,7 +22,7 @@ export const GrowthWheel = memo(function GrowthWheel({ progress, remaining, read
         backgroundColor: index < value * segments ? "#55a349" : "#bbb8a1",
         transform: [{ rotate: (index * 360 / segments) + "deg" }] }} />;
     })}
-    <GardenText style={[styles.clock, { fontSize: size < 52 ? 10 : 12 }]}>{clock}</GardenText>
+    <GardenText style={[styles.clock, { fontSize: size / scale < 52 ? 10 : 12 }]}>{clock}</GardenText>
   </View>;
 });
 

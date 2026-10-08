@@ -779,3 +779,42 @@ Android, iOS and web production exports. The import audit found no missing local
 imports or unreachable source files. Temporary verification exports were removed
 after the checks. Approximately 612 MiB of obsolete files were deleted, mostly
 past build bundles and previews. No device UI check was performed for this cleanup.
+
+## Responsive garden controls (October 8, 2026)
+
+The toolbar, growing controls and top HUD now use a shared scale based on both
+viewport dimensions and safe areas. Buttons, labels, icons, timer rings, spacing
+and wooden frames grow together, up to twice their phone size. The growing
+panel has a readable minimum width and a capped maximum; the toolbar caps its
+width and shares spare room between tool buttons. Short landscape windows keep
+44-point button targets and scrolling. Resizing the browser updates the layout.
+
+Verification: rendered button/font/frame dimensions and panel bounds passed
+checks at six viewport sizes from 640×300 to 3440×1440, including phone safe
+areas. Lint, TypeScript, all 13 game checks and Android/iOS/web production
+exports passed. Live browser visual review was unavailable in this session.
+Temporary check files and exports were removed after verification.
+
+## Harvest-ready bell (October 8, 2026)
+
+A short, original soft bell rings once when a crop becomes ready to harvest.
+Ordinary ticks, panel changes and harvesting do not replay it; each subsequent
+crop gets a new alert. Paused sessions and Sunflower intermediate phases stay
+silent. The reducer retains the event through immediately harvesting a ready
+plant. Rewards and manual phase starts are unchanged.
+
+Native playback uses the bundled `assets/audio/harvest-ding.wav` with Expo Audio,
+mixing with other audio. The plugin disables microphone permissions and
+background playback. Web uses the matching generated bell and activates its
+audio context from the planting click/tap. Hidden web tabs keep checking the
+deadline, though browser timer throttling can delay the alert. On phones the
+clock catches up, and the bell plays, when returning from the background; this
+is an in-app cue rather than a scheduled system notification.
+
+Lint, TypeScript, all 14 game-check scripts and Android/iOS/web exports passed.
+`npm run check:completion-sound` covers all crops in both timer modes, pause/
+resume, late completion, background catch-up, intermediate phases, repeated
+ticks, immediate harvest/keep and bell asset integrity. Actual speaker playback
+was not reviewed on a device. To check it, plant a Quick play Carrot, wait for
+the timer to finish and listen for one bell, then switch panels and harvest to
+confirm it stays silent until another crop completes.

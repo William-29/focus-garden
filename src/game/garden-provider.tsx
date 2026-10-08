@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { AppState } from 'react-native';
+import { AppState, Platform } from 'react-native';
+import { useCompletionSound } from '@/hooks/use-completion-sound';
 
 import { pets, type Action, type GardenState } from './garden';
 import { parsePetNames } from './pet-names';
@@ -34,6 +35,7 @@ const GardenClock = createContext<number | null>(null);
 export function GardenProvider({ children }: { children: React.ReactNode }) {
   const [model, dispatch] = useReducer(gardenUIReducer, undefined, initialGardenUI);
   const { state, notice, harvest, scene } = model;
+  const prepareCompletionSound = useCompletionSound(model.completionSound);
   const sceneAction = useCallback((action: SceneAction) => dispatch({ type: 'scene', action }), []);
   const [now, setNow] = useState(Date.now);
   const [namesStorageWarning, setNamesStorageWarning] = useState<string | null>(null);
@@ -47,6 +49,7 @@ export function GardenProvider({ children }: { children: React.ReactNode }) {
   const saves = useRef(Promise.resolve());
 
   const perform = useCallback((action: Action) => {
+    if (action.type === 'plant' || action.type === 'plantSeed' || action.type === 'resume' || action.type === 'next') prepareCompletionSound();
     const timestamp = Date.now();
     setNow(timestamp);
     dispatch({ type: 'perform', action, now: timestamp });
@@ -79,7 +82,7 @@ export function GardenProvider({ children }: { children: React.ReactNode }) {
         } catch { setNamesStorageWarning('Names changed for this visit, but could not be saved on this device.'); }
       });
     }
-  }, []);
+  }, [prepareCompletionSound]);
 
   useEffect(() => {
     if (!notice) return;
@@ -145,10 +148,12 @@ export function GardenProvider({ children }: { children: React.ReactNode }) {
       tick();
       timer = setInterval(tick, 250);
     };
-    if (AppState.currentState === 'active' || AppState.currentState === null) start();
+    // A study tab can stay in the background on web and still announce a ready
+    // crop. Native timers catch up on return, since the OS can suspend the app.
+    if (Platform.OS === 'web' || AppState.currentState === 'active' || AppState.currentState === null) start();
     const subscription = AppState.addEventListener('change', (status) => {
       if (status === 'active') start();
-      else stop();
+      else if (Platform.OS !== 'web') stop();
     });
     return () => {
       stop();

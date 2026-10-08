@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Gardener } from '@/components/garden/gardener';
 import { GardenPanel, PetNameEditor, type GardenPanelName } from '@/components/garden/garden-panels';
-import { GardenText, palette } from '@/components/garden/garden-ui';
+import { GardenControlScale, GardenText, palette } from '@/components/garden/garden-ui';
 import { GardenHud, GardenSign } from '@/components/garden/garden-hud';
 import { SeasonWeather } from '@/components/garden/season-weather';
 import { GardenNotice } from '@/components/garden/garden-notice';
@@ -90,8 +90,10 @@ export default function HomeScreen() {
         const point = { x: event.nativeEvent.locationX, y: event.nativeEvent.locationY };
         if (isGardenGround(width, height, state.season, point)) setWalkCommand((previous) => ({ ...point, id: (previous?.id ?? 0) + 1 }));
       }} />
+      <GardenControlScale scale={layout.controlScale}>
       <GardenHud minute={Math.floor(now / 60000) * 60000} coins={state.coins} xp={state.xp} season={state.season}
         left={layout.controls.left} right={layout.right} top={layout.controls.top} onProfile={openStats} onSeason={openSeasons} />
+      </GardenControlScale>
       <GardenSign name={state.gardenName} season={state.season} {...sign} onRename={openNames} />
 
       <DisplayGreenhouse width={width} height={height} state={state} onSelect={openDisplay} />
@@ -103,11 +105,13 @@ export default function HomeScreen() {
       <GardenPets width={width} height={height} onPress={openPetName} pausedPet={editingPet} />
       <HarvestCelebration width={width} height={height} />
       <SeasonWeather season={state.season} width={width} height={height} />
-      <GardenNotice style={[styles.dialogue, { left: layout.controls.left, bottom: layout.bottom + 66, width: layout.toolbarWidth }]} />
-      <GrowingPanel width={layout.controls.width} height={layout.controls.height} right={layout.right} bottom={layout.bottom} onKeep={keep} />
+      <GardenControlScale scale={layout.controlScale}>
+      <GardenNotice style={[styles.dialogue, { left: layout.controls.left, bottom: layout.bottom + layout.toolbarHeight + 8 * layout.controlScale, width: layout.toolbarWidth }]} />
+      <GrowingPanel width={layout.panelWidth} height={layout.controls.height} right={layout.right} bottom={layout.bottom} onKeep={keep} />
 
       <GardenToolbar left={layout.controls.left} bottom={layout.bottom} width={layout.toolbarWidth}
         onWardrobe={openWardrobe} onPets={openPets} onStats={openStats} />
+      </GardenControlScale>
       <LevelCelebration />
       {cropWheelOpen && !session && !harvest && <CropWheel width={width} height={height} onClose={closeCropWheel} onOpenShed={openSeeds} />}
       </View>
